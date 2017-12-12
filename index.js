@@ -45,7 +45,14 @@ export default class RestClient {
     }
     const fetchPromise = () => fetch(fullRoute, opts);
     const parse = (response, fallback = []) => {
-      return response.text().then(text => (text ? JSON.parse(text) : fallback));
+      return response
+        .text()
+        .then(
+          text =>
+            text
+              ? { ...JSON.parse(text), _meta: { status: response.status } }
+              : fallback
+        );
     };
     if (this.devMode && this.simulatedDelay > 0) {
       // Simulate an n-second delay in every request
